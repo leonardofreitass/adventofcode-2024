@@ -3,14 +3,14 @@
 
 (defn process-input
   [inputs]
-  (mapv
-   sort
-   (reduce
-    (fn [[left right] line]
-      (let [[a b] (str/split line #"   ")]
-        [(conj left (Integer/parseInt a)) (conj right (Integer/parseInt b))]))
-    [[] []]
-    inputs)))
+  (->> inputs
+       (reduce
+        (fn [[left right] line]
+          (let [[a b] (str/split line #"   ")]
+            [(conj left (Integer/parseInt a))
+             (conj right (Integer/parseInt b))]))
+        [[] []])
+       (mapv sort)))
 
 (defn run
   [inputs]
