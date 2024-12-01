@@ -1,0 +1,5 @@
+#!/bin/bash
+
+cp "./resources/_input_template"  "./resources/day_$1_inputs"
+cp -R ./src/adventofcode_2024/exercises/_day_template/.  "./src/adventofcode_2024/exercises/day_$1"
+find "./src/adventofcode_2024/exercises/day_$1/" -type f -exec sed -i "s/day-x/day-$1/" {} \;
