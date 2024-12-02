@@ -11,16 +11,15 @@
          l (first line)
          n (second line)
          s (next (next line))]
-    (let [diff (- l n)]
-      (if (zero? diff)
-        false
-        (if (> (abs diff) 3)
-          false
-          (if (and (not (zero? ld)) (neg? (bit-xor diff ld)))
-            false
-            (if (empty? s)
-              true
-              (recur diff n (first s) (next s)))))))))
+    (let [diff (- l n)
+          faulty (or
+                  (zero? diff)
+                  (> (Math/abs diff) 3)
+                  (and (not (zero? ld)) (neg? (bit-xor diff ld))))]
+      (cond
+        faulty false
+        (empty? s) true
+        :else (recur diff n (first s) (next s))))))
 
 (defn run
   [inputs]
