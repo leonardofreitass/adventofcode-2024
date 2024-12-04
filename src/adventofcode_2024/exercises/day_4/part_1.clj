@@ -16,7 +16,8 @@
 (defn all-pos
   [grid]
   (for [y (range (count grid))
-        x (range (count (first grid)))]
+        x (range (count (first grid)))
+        :when (= (get-in grid [x y]) "X")]
     [x y]))
 
 (defn get-many-in-grid
