@@ -1,8 +1,8 @@
 (ns adventofcode-2024.exercises.day-4.part-2
   (:require [clojure.string :as str]))
 
-(def target "MAS")
-(def reverse-target (str/reverse target))
+(def target ["M" "A" "S"])
+(def reverse-target (reverse target))
 
 (def directions
   [[-1 -1] [-1 1]])
@@ -24,14 +24,17 @@
 
 (defn get-many-in-grid
   [grid pos-arr]
-  (str/join "" (mapv (fn [pos] (get-in grid pos)) pos-arr)))
+  (mapv (fn [pos] (get-in grid pos)) pos-arr))
+
+(defn is-valid?
+  [grid pos]
+  (every?
+   #(or (= target %) (= reverse-target %))
+   (mapv (partial get-many-in-grid grid) (all-directions pos))))
 
 (defn run
   [inputs]
-  (let [grid (mapv #(str/split % #"") inputs)
-        grid-pos (all-pos grid)
-        grid-pos-directions (mapv all-directions grid-pos)]
+  (let [grid (mapv #(str/split % #"") inputs)]
     (count (filter
-            (fn [words]
-              (every? #(or (= target %) (= reverse-target %)) words))
-            (map #(mapv (partial get-many-in-grid grid) %) grid-pos-directions)))))
+            (partial is-valid? grid)
+            (all-pos grid)))))

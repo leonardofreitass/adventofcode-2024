@@ -1,7 +1,7 @@
 (ns adventofcode-2024.exercises.day-4.part-1
   (:require [clojure.string :as str]))
 
-(def target "XMAS")
+(def target ["X" "M" "A" "S"])
 
 (def directions
   [[1 0] [-1 0] [0 1] [0 -1] [1 1] [-1 -1] [1 -1] [-1 1]])
@@ -22,14 +22,17 @@
 
 (defn get-many-in-grid
   [grid pos-arr]
-  (str/join "" (mapv (fn [pos] (get-in grid pos)) pos-arr)))
+  (mapv (fn [pos] (get-in grid pos)) pos-arr))
+
+(defn is-valid?
+  [grid pos-directions]
+  (= (get-many-in-grid grid pos-directions) target))
 
 (defn run
   [inputs]
   (let [grid (mapv #(str/split % #"") inputs)
         grid-pos (all-pos grid)
-        grid-pos-directions (apply concat (mapv all-directions grid-pos))]
+        grid-pos-directions (apply concat (map all-directions grid-pos))]
     (count (filter
-            (fn [pos-directions]
-              (= (get-many-in-grid grid pos-directions) target))
+            (partial is-valid? grid)
             grid-pos-directions))))
