@@ -14,12 +14,21 @@
             (when col-index [row-index col-index])))
         (map-indexed vector inputs)))
 
-(defn all-pos
-  [grid]
-  (for [y (range (count grid))
-        x (range (count (first grid)))
-        :when (= (get-in grid [x y]) ".")]
-    [x y]))
+(defn traverse-grid
+  [grid start]
+  (loop [traversed #{}
+         pos start
+         ch (get-in grid start)]
+    (if (nil? (get-in grid pos))
+      traversed
+      (let [dir (directions ch)
+            nxt (map + pos (:move dir))
+            nxt-ch (get-in grid nxt)
+            blocked? (= nxt-ch "#")]
+        (recur
+         (conj traversed pos)
+         (if blocked? pos nxt)
+         (if blocked? (:rotation dir) ch))))))
 
 (defn looping?
   [grid start]
@@ -39,11 +48,11 @@
            (if blocked? pos nxt)
            (if blocked? (:rotation dir) ch)))))))
 
-(defn run
-  [inputs]
+(defn run [inputs]
   (let [grid (mapv #(str/split % #"") inputs)
-        start (find-start-position inputs)]
+        start (find-start-position inputs)
+        path (disj (traverse-grid grid start) start)]
     (count (filter
             (fn [pos]
               (looping? (assoc-in grid pos "#") start))
-            (all-pos grid)))))
+            path))))
