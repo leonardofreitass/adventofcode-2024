@@ -1,7 +1,7 @@
 (ns adventofcode-2024.exercises.day-8.part-1
   (:require [clojure.string :as str]))
 
-(defn generate-antena-pos-map
+(defn generate-antenna-pos-map
   [grid]
   (reduce
     (fn [acc [key & value]]
@@ -22,11 +22,11 @@
   (not (or (< y 0) (< x 0) (>= y max-y) (>= x max-x))))
 
 (defn generate-antinodes
-  [antena-pos max-x max-y]
+  [antenna-pos max-x max-y]
   (filter
    (partial not-out-of-bounds? max-y max-x)
-   (for [a antena-pos
-         b antena-pos
+   (for [a antenna-pos
+         b antenna-pos
          :when (not= a b)]
      (map + a (pos-diff a b)))))
 
@@ -35,9 +35,9 @@
   (let [grid (mapv #(str/split % #"") inputs)
         max-y (count grid)
         max-x (count (first grid))
-        antena-pos-map (generate-antena-pos-map grid)]
+        antenna-pos-map (generate-antenna-pos-map grid)]
     (count (reduce
-            (fn [s antena-pos]
-              (apply conj s (generate-antinodes antena-pos max-x max-y)))
+            (fn [s antenna-pos]
+              (apply conj s (generate-antinodes antenna-pos max-x max-y)))
             #{}
-            (vals antena-pos-map)))))
+            (vals antenna-pos-map)))))
