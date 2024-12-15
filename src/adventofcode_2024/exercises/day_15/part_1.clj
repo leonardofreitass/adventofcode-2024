@@ -15,7 +15,7 @@
   (reduce
    (fn [{:keys [grid robot]} [x y cell]]
      {:grid (assoc grid [y x] cell)
-      :robot (if (= cell robot-ch) [x y] robot)})
+      :robot (if (= cell robot-ch) [y x] robot)})
    {:grid {} :robot nil}
    (for [y (range (count grid))
          x (range (count (first grid)))
@@ -30,24 +30,29 @@
         moves (str/join "" (next _moves))]
     [(map-grid grid) moves]))
 
+(defn move-objects
+  [grid to from]
+  (dissoc (assoc grid to (grid from)) from))
+
+
 (defn shift
-  [grid dir from to]
-  (if (not (nil? (grid to)))
-    (if (= (grid to) box-ch)
-      (let [next-pos (mapv + to dir)
-            [new-grid pushed] (shift grid dir to next-pos)]
-        (if pushed [(dissoc (assoc new-grid to (new-grid from)) from) true] [grid false]))
-      [grid false])
-    [(dissoc (assoc grid to (grid from)) from) true]))
+  [grid dir from]
+  (let [to (mapv + from dir)
+        to-ch (grid to)]
+    (if (not (nil? to-ch))
+      (if (= to-ch box-ch)
+        (let [[new-grid pushed] (shift grid dir to)]
+          (if pushed [(move-objects new-grid to from) true] [grid false]))
+        [grid false])
+      [(move-objects grid to from) true])))
 
 (defn iterate-moves
   [grid robot moves]
   (:grid (reduce
           (fn [{:keys [grid robot]} move]
             (let [dir (directions move)
-                  new-pos (mapv + robot dir)
-                  [new-grid pushed] (shift grid dir robot new-pos)]
-              {:grid new-grid :robot (if pushed new-pos robot)}))
+                  [new-grid pushed] (shift grid dir robot)]
+              {:grid new-grid :robot (if pushed (mapv + robot dir) robot)}))
           {:grid grid :robot robot}
           moves)))
 
