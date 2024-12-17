@@ -1,6 +1,5 @@
-(ns adventofcode-2024.exercises.day-17.part-1 
-  (:require
-    [clojure.string :as str]))
+(ns adventofcode-2024.exercises.day-17.part-1
+  (:require [clojure.string :as str]))
 
 (defn combo-operands
   [register-a register-b register-c operand]
