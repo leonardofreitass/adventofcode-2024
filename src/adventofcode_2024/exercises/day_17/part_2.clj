@@ -1,8 +1,8 @@
 (ns adventofcode-2024.exercises.day-17.part-2)
 
 (defn big-xor
-  [f & r]
-  (reduce (fn [acc v] (.xor acc (biginteger v))) (biginteger f) r))
+  [a b]
+  (.xor (biginteger a) (biginteger b))) ; If you wonder why I am casting from bigint to biginteger, it is because the .xor method is not defined for bigint (the clojure native/faster bigint), only for biginteger (the java class). This later gets converted back to bigint when an operation with another bigint is performed.
 
 (defn combo-operands
   [register-a register-b register-c operand]
