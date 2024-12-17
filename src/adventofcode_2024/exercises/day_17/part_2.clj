@@ -56,7 +56,7 @@
   (let [[_ b c _ program] inputs
         register-b (bigint (re-find #"\d+" b))
         register-c (bigint (re-find #"\d+" c))
-        program (mapv #(bigint %) (re-seq #"-?\d+" program))]
+        program (mapv bigint (re-seq #"-?\d+" program))]
     (loop [register-a (bigint power)]
       (let [output (run-until-halt program register-a register-b register-c)
             tail (tail-equality program output)]
