@@ -46,9 +46,10 @@
   (let [all-blocks (parse-inputs inputs)
         start [0 0]
         end [bounds bounds]]
-    (loop [blocks (take n-bytes all-blocks)
-           to-add (drop n-bytes all-blocks)]
-      (let [shortest (shortest-path (set blocks) start end)]
-        (if (nil? shortest)
-          (str/join "," (first blocks))
-          (recur (conj blocks (first to-add)) (rest to-add)))))))
+    (loop [a-bound n-bytes
+           b-bound (count all-blocks)]
+      (let [to-take (+ a-bound (Math/ceil (/ (- b-bound a-bound) 2)))
+            shortest (shortest-path (set (take to-take all-blocks)) start end)]
+        (if (= (inc a-bound) b-bound)
+          (str/join "," (nth all-blocks a-bound))
+          (recur (if (nil? shortest) a-bound to-take) (if (nil? shortest) to-take b-bound)))))))
