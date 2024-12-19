@@ -1,4 +1,4 @@
-(ns adventofcode-2024.exercises.day-19.part-1 
+(ns adventofcode-2024.exercises.day-19.part-1
   (:require [clojure.string :as str]))
 
 (defn parse-inputs
@@ -7,14 +7,14 @@
         patterns (re-seq #"\w+" patterns-str)]
     [(set patterns) designs]))
 
-(defn possible-design?
-  [patterns design]
-  (if (empty? design)
-    true
-    (some
-     #(if (str/starts-with? design %)
-        (possible-design? patterns (subs design (count %))))
-     patterns)))
+(def possible-design?
+  (memoize (fn [patterns design]
+               (if (empty? design)
+                 true
+                 (some
+                  #(if (str/starts-with? design %)
+                     (possible-design? patterns (subs design (count %))))
+                  patterns)))))
 
 (defn run
   [inputs]
